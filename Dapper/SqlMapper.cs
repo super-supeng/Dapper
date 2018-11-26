@@ -2026,15 +2026,17 @@ namespace Dapper
                                     listParam.Size = -1;
                                 }
                             }
-
-                            var tmp = listParam.Value = SanitizeParameterValue(item);
-                            if (tmp != null && !(tmp is DBNull))
-                                lastValue = tmp; // only interested in non-trivial values for padding
-
+                            
+                            //Set the DbType first,otherwise Oracle.ManagedDataAccess 
+                            //will throw ArgumentException when the parameter use TypeHandler
                             if (listParam.DbType != dbType)
                             {
                                 listParam.DbType = dbType;
                             }
+                            
+                            var tmp = listParam.Value = SanitizeParameterValue(item);
+                            if (tmp != null && !(tmp is DBNull))
+                                lastValue = tmp; // only interested in non-trivial values for padding
                             command.Parameters.Add(listParam);
                         }
                     }
